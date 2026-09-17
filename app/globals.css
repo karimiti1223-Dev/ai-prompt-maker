@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  /* 横スクロールが発生しないようにする(要件で最重要とされているポイント) */
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+body {
+  background-color: #f7f8fc;
+  color: #1f2333;
+}
+
+/* スマホで指が押しやすいよう、ボタンの最小タップ領域を確保 */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
