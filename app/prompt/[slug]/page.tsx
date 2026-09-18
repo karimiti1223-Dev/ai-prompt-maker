@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { articles, getArticleBySlug } from "@/lib/articles";
 import { getCategoryById } from "@/lib/categories";
+import { CategoryIcon } from "@/components/icons";
 
 type Props = {
   params: { slug: string };
@@ -33,15 +34,20 @@ export default function ArticlePage({ params }: Props) {
   const category = getCategoryById(article.categoryId);
 
   return (
-    <article className="flex flex-col gap-6">
+    <article className="flex flex-col gap-7">
       <div>
-        <p className="text-xs font-medium text-brand-600">
-          {article.searchIntent}
-        </p>
-        <h1 className="mt-1 text-xl font-bold text-gray-900">
+        {category && (
+          <div className="mb-2 flex items-center gap-2">
+            <CategoryIcon categoryId={category.id} className="h-4 w-4 text-signal" />
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink/40">
+              {article.searchIntent}
+            </p>
+          </div>
+        )}
+        <h1 className="font-display text-xl font-bold text-ink">
           {article.title}
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-gray-600">
+        <p className="mt-3 text-sm leading-relaxed text-ink/60">
           {article.intro}
         </p>
       </div>
@@ -50,12 +56,12 @@ export default function ArticlePage({ params }: Props) {
         {article.examplePrompts.map((example, index) => (
           <div
             key={index}
-            className="rounded-xl2 border border-gray-200 bg-white p-4"
+            className="rounded-xl2 border border-line bg-surface p-4"
           >
-            <p className="mb-2 text-sm font-semibold text-gray-800">
+            <p className="mb-2 text-sm font-semibold text-ink">
               {example.title}
             </p>
-            <p className="whitespace-pre-wrap rounded-lg bg-gray-50 p-3 text-sm leading-relaxed text-gray-700">
+            <p className="whitespace-pre-wrap rounded-lg border border-line bg-paper p-3 font-mono text-[13px] leading-relaxed text-ink">
               {example.body}
             </p>
           </div>
@@ -65,7 +71,7 @@ export default function ArticlePage({ params }: Props) {
       {category && (
         <Link
           href={`/create/${category.id}`}
-          className="w-full rounded-full bg-brand-600 px-6 py-4 text-center text-base font-bold text-white shadow-md transition hover:bg-brand-700"
+          className="w-full rounded-full bg-ink px-6 py-4 text-center text-base font-semibold text-paper transition-colors hover:bg-signal"
         >
           自分専用のプロンプトを作る
         </Link>

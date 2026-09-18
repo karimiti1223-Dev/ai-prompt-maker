@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { addPromptToHistory } from "@/lib/storage";
+import TypewriterText from "./TypewriterText";
 
 type Props = {
   prompt: string;
@@ -45,53 +46,60 @@ export default function PromptResultCard({
         // ユーザーが共有をキャンセルした場合などは何もしない
       }
     } else {
-      // 共有APIが使えない環境(主にPCブラウザ)ではコピーで代用
       await handleCopy();
       alert("お使いの環境では共有機能が使えないため、代わりにコピーしました。");
     }
   }
 
   return (
-    <div className="rounded-xl2 border border-gray-200 bg-white p-4 shadow-sm">
-      <h2 className="mb-2 text-sm font-semibold text-gray-500">
+    <div className="animate-rise-in rounded-xl2 border border-line bg-surface p-4">
+      <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/40">
         生成されたプロンプト
       </h2>
 
       {/* ユーザー入力を含むAI生成テキストを危険なHTMLとして描画しないよう、
           dangerouslySetInnerHTMLは使わずプレーンテキストとして表示する */}
-      <p className="whitespace-pre-wrap rounded-lg bg-gray-50 p-3 text-sm leading-relaxed text-gray-800">
-        {prompt}
-      </p>
+      <TypewriterText
+        key={prompt}
+        text={prompt}
+        className="whitespace-pre-wrap rounded-lg border border-line bg-paper p-3 font-mono text-[13px] leading-relaxed text-ink"
+      />
 
       <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
         <button
           onClick={handleCopy}
-          className="rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 active:scale-[0.98]"
+          className={`rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors active:scale-[0.98] ${
+            copied ? "bg-success text-paper" : "bg-ink text-paper hover:bg-signal"
+          }`}
         >
           {copied ? "コピーしました！" : "コピー"}
         </button>
         <button
           onClick={onRegenerate}
           disabled={isRegenerating}
-          className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 active:scale-[0.98] disabled:opacity-50"
+          className="rounded-lg border border-line bg-surface px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink active:scale-[0.98] disabled:opacity-50"
         >
           {isRegenerating ? "生成中…" : "もう一度生成"}
         </button>
         <Link
           href={`/improve?prompt=${encodeURIComponent(prompt)}`}
-          className="col-span-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-center text-sm font-semibold text-gray-700 transition hover:bg-gray-50 active:scale-[0.98] sm:col-span-1"
+          className="col-span-2 rounded-lg border border-line bg-surface px-4 py-2.5 text-center text-sm font-semibold text-ink transition-colors hover:border-ink active:scale-[0.98] sm:col-span-1"
         >
           改善する
         </Link>
         <button
           onClick={handleSave}
-          className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 active:scale-[0.98]"
+          className={`rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors active:scale-[0.98] ${
+            saved
+              ? "border-success text-success"
+              : "border-line bg-surface text-ink hover:border-ink"
+          }`}
         >
           {saved ? "保存しました" : "保存"}
         </button>
         <button
           onClick={handleShare}
-          className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 active:scale-[0.98]"
+          className="rounded-lg border border-line bg-surface px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink active:scale-[0.98]"
         >
           共有
         </button>

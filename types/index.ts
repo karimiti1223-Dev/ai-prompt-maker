@@ -2,7 +2,6 @@
 export type Category = {
   id: string; // URLにも使うID。例: "game-development"
   label: string; // 画面に表示する名前。例: "ゲーム制作"
-  emoji: string; // 目印になる絵文字(画像を使わず軽量にするため)
   description: string; // カテゴリの簡単な説明
 };
 

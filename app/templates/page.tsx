@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { categories } from "@/lib/categories";
 import { getTemplatesByCategory } from "@/lib/templates";
+import { CategoryIcon } from "@/components/icons";
 
 export default function TemplatesPage() {
   const categoriesWithTemplates = categories.filter(
@@ -8,10 +9,10 @@ export default function TemplatesPage() {
   );
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-10">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">テンプレート</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="font-display text-xl font-bold text-ink">テンプレート</h1>
+        <p className="mt-2 text-sm text-ink/60">
           よくある目的から選ぶと、質問の入力欄にあらかじめ内容が入った状態で始められます。
         </p>
       </div>
@@ -20,21 +21,21 @@ export default function TemplatesPage() {
         const items = getTemplatesByCategory(category.id);
         return (
           <div key={category.id}>
-            <h2 className="mb-2 flex items-center gap-1 text-sm font-semibold text-gray-700">
-              <span>{category.emoji}</span>
-              <span>{category.label}</span>
+            <h2 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ink/40">
+              <CategoryIcon categoryId={category.id} className="h-4 w-4" />
+              {category.label}
             </h2>
             <div className="flex flex-col gap-2">
               {items.map((template) => (
                 <Link
                   key={template.id}
                   href={`/create/${category.id}?template=${template.id}`}
-                  className="rounded-xl2 border border-gray-200 bg-white p-4 transition hover:border-brand-300 hover:shadow-md active:scale-[0.99]"
+                  className="rounded-xl2 border border-line bg-surface p-4 transition-colors hover:border-ink active:scale-[0.99]"
                 >
-                  <p className="text-sm font-semibold text-gray-800">
+                  <p className="text-sm font-semibold text-ink">
                     {template.title}
                   </p>
-                  <p className="mt-0.5 text-xs text-gray-500">
+                  <p className="mt-0.5 text-xs text-ink/50">
                     {template.description}
                   </p>
                 </Link>

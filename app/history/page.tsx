@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { SavedPrompt } from "@/types";
 import { getCategoryById } from "@/lib/categories";
+import { CategoryIcon } from "@/components/icons";
 import {
   getHistory,
   toggleFavorite,
@@ -42,13 +43,13 @@ export default function HistoryPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-900">履歴</h1>
+        <h1 className="font-display text-xl font-bold text-ink">履歴</h1>
         <button
           onClick={() => setOnlyFavorites((v) => !v)}
-          className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
+          className={`rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
             onlyFavorites
-              ? "border-brand-600 bg-brand-600 text-white"
-              : "border-gray-300 bg-white text-gray-600"
+              ? "border-ink bg-ink text-paper"
+              : "border-line bg-surface text-ink/60"
           }`}
         >
           お気に入りのみ
@@ -56,7 +57,7 @@ export default function HistoryPage() {
       </div>
 
       {displayedHistory.length === 0 && (
-        <p className="rounded-xl2 border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500">
+        <p className="rounded-xl2 border border-dashed border-line p-6 text-center text-sm text-ink/50">
           {onlyFavorites
             ? "お気に入りに保存したプロンプトはまだありません。"
             : "保存したプロンプトはまだありません。作成画面の「保存」ボタンから追加できます。"}
@@ -69,35 +70,42 @@ export default function HistoryPage() {
           return (
             <div
               key={item.id}
-              className="rounded-xl2 border border-gray-200 bg-white p-4 shadow-sm"
+              className="rounded-xl2 border border-line bg-surface p-4"
             >
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-xs font-medium text-brand-600">
-                  {category ? `${category.emoji} ${category.label}` : "カテゴリ不明"}
+                <span className="flex items-center gap-1.5 text-xs font-medium text-ink/60">
+                  {category && (
+                    <CategoryIcon categoryId={category.id} className="h-3.5 w-3.5" />
+                  )}
+                  {category ? category.label : "カテゴリ不明"}
                 </span>
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-ink/30">
                   {new Date(item.createdAt).toLocaleString("ja-JP")}
                 </span>
               </div>
-              <p className="whitespace-pre-wrap text-sm text-gray-800">
+              <p className="whitespace-pre-wrap font-mono text-[13px] leading-relaxed text-ink">
                 {item.content}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
                   onClick={() => handleCopy(item.id, item.content)}
-                  className="rounded-lg bg-brand-600 px-3 py-2 text-xs font-semibold text-white hover:bg-brand-700"
+                  className={`rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
+                    copiedId === item.id
+                      ? "bg-success text-paper"
+                      : "bg-ink text-paper hover:bg-signal"
+                  }`}
                 >
                   {copiedId === item.id ? "コピーしました！" : "コピー"}
                 </button>
                 <button
                   onClick={() => handleToggleFavorite(item.id)}
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                  className="rounded-lg border border-line bg-surface px-3 py-2 text-xs font-semibold text-ink transition-colors hover:border-ink"
                 >
-                  {item.isFavorite ? "★ お気に入り解除" : "☆ お気に入り"}
+                  {item.isFavorite ? "お気に入り解除" : "お気に入り"}
                 </button>
                 <button
                   onClick={() => handleDelete(item.id)}
-                  className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-red-500 hover:bg-red-50"
+                  className="rounded-lg border border-line bg-surface px-3 py-2 text-xs font-semibold text-signalDark transition-colors hover:border-signal"
                 >
                   削除
                 </button>

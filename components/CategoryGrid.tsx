@@ -1,17 +1,21 @@
 import Link from "next/link";
 import { categories } from "@/lib/categories";
+import { CategoryIcon } from "./icons";
 
 export default function CategoryGrid() {
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
       {categories.map((category) => (
         <Link
           key={category.id}
           href={`/create/${category.id}`}
-          className="flex flex-col items-center justify-center gap-1 rounded-xl2 border border-gray-200 bg-white px-3 py-5 text-center shadow-sm transition hover:border-brand-300 hover:shadow-md active:scale-[0.98]"
+          className="group flex flex-col items-start gap-3 rounded-xl2 border border-line bg-surface px-4 py-4 transition-colors hover:border-ink active:scale-[0.98]"
         >
-          <span className="text-2xl">{category.emoji}</span>
-          <span className="text-sm font-medium text-gray-800">
+          <CategoryIcon
+            categoryId={category.id}
+            className="h-5 w-5 text-ink/70 transition-colors group-hover:text-signal"
+          />
+          <span className="text-sm font-medium text-ink">
             {category.label}
           </span>
         </Link>
