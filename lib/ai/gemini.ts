@@ -4,7 +4,7 @@ import { AIMessage } from "./provider";
 // 重要: この関数は「サーバー側(API Route)」からしか呼ばれません。
 // process.env.GEMINI_API_KEY はブラウザには一切送られないので安全です。
 
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODEL = "gemini-3.6-flash";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 export async function callGemini(message: AIMessage): Promise<string> {
@@ -32,7 +32,10 @@ export async function callGemini(message: AIMessage): Promise<string> {
       ],
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 1024,
+        maxOutputTokens: 2048,
+        thinkingConfig: {
+          thinkingBudget: 0,
+        },
       },
     }),
     // Vercelなどのサーバーレス環境でタイムアウトしすぎないよう注意。
