@@ -18,6 +18,10 @@ export type PromptAnswers = {
   responseStyleIds: string[]; // 質問2: 複数選択
   constraints: string; // 質問3: 守ってほしい条件
   extraNotes: string; // 質問4: その他伝えたいこと
+  referenceImage?: {
+    dataUrl: string; // "data:image/png;base64,xxxx" 形式(ブラウザのFileReaderが返す形)
+    mimeType: string;
+  };
 };
 
 // AI生成APIへのリクエスト

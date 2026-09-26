@@ -1,4 +1,5 @@
 import { AIMessage } from "./provider";
+import { AIError, codeFromStatus } from "./errors";
 
 // Gemini APIを呼び出す関数。
 // 重要: この関数は「サーバー側(API Route)」からしか呼ばれません。
@@ -11,12 +12,24 @@ export async function callGemini(message: AIMessage): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    throw new Error(
-      "GEMINI_API_KEYが設定されていません。.env.localを確認してください。"
+    throw new AIError(
+      "GEMINI_API_KEYが設定されていません。.env.localを確認してください。",
+      "unauthorized"
     );
   }
 
-  // Gemini APIは systemInstruction と contents を分けて渡せます。
+  // テキストに加えて、画像が添付されている場合はinlineDataとして一緒に送る。
+  // Geminiはこの形式で「画像を見ながら文章を生成する」ことができる。
+  const parts: Record<string, unknown>[] = [{ text: message.userPrompt }];
+  if (message.image) {
+    parts.push({
+      inlineData: {
+        mimeType: message.image.mimeType,
+        data: message.image.data,
+      },
+    });
+  }
+
   const response = await fetch(`${GEMINI_ENDPOINT}?key=${apiKey}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -27,7 +40,7 @@ export async function callGemini(message: AIMessage): Promise<string> {
       contents: [
         {
           role: "user",
-          parts: [{ text: message.userPrompt }],
+          parts,
         },
       ],
       generationConfig: {
@@ -44,8 +57,13 @@ export async function callGemini(message: AIMessage): Promise<string> {
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(
-      `Gemini APIの呼び出しに失敗しました (status: ${response.status}): ${errorText}`
+    // 詳しい内容はサーバーのログにだけ残す(ユーザーには種類分けしたメッセージを見せる)
+    console.error(
+      `[Gemini] status=${response.status} body=${errorText}`
+    );
+    throw new AIError(
+      `Gemini APIの呼び出しに失敗しました (status: ${response.status})`,
+      codeFromStatus(response.status)
     );
   }
 
@@ -55,8 +73,9 @@ export async function callGemini(message: AIMessage): Promise<string> {
     data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
   if (!text) {
-    throw new Error(
-      "Gemini APIから有効な応答が得られませんでした。レスポンス内容を確認してください。"
+    throw new AIError(
+      "Gemini APIから有効な応答が得られませんでした。",
+      "unknown"
     );
   }
 

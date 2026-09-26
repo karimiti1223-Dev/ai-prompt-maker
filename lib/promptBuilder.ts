@@ -5,8 +5,8 @@ import { getCategoryById, responseStyles } from "./categories";
 // つまりこのアプリは、ユーザーの回答 → AIへの依頼文(メタプロンプト) → 完成したプロンプト
 // という2段構えになっています。
 
-export function buildSystemPrompt(): string {
-  return [
+export function buildSystemPrompt(hasImage: boolean): string {
+  const lines = [
     "あなたはプロンプトエンジニアリングの専門家です。",
     "ユーザーが入力した情報をもとに、別のAI(ChatGPT、Claude、Geminiなど)にそのまま貼り付けて使える",
     "「完成されたプロンプト」を1つ作成してください。",
@@ -17,7 +17,15 @@ export function buildSystemPrompt(): string {
     "・ユーザーが指定した回答スタイル(初心者向け、箇条書きなど)を反映してください。",
     "・ユーザーが指定した条件があれば、必ず守るべき制約として含めてください。",
     "・日本語で出力してください。",
-  ].join("\n");
+  ];
+
+  if (hasImage) {
+    lines.push(
+      "・添付された画像の内容(被写体、構図、色、雰囲気など)を観察し、その特徴をプロンプトに具体的に反映してください。"
+    );
+  }
+
+  return lines.join("\n");
 }
 
 export function buildUserPrompt(answers: PromptAnswers): string {
@@ -41,6 +49,10 @@ export function buildUserPrompt(answers: PromptAnswers): string {
 
   if (answers.extraNotes.trim()) {
     lines.push(`その他伝えたいこと: ${answers.extraNotes}`);
+  }
+
+  if (answers.referenceImage) {
+    lines.push("添付画像: あり(内容を観察してプロンプトに反映してください)");
   }
 
   lines.push("");

@@ -51,6 +51,16 @@ export default function PromptResultCard({
     }
   }
 
+  function handleShareX() {
+    const siteUrl =
+      typeof window !== "undefined" ? window.location.origin : "";
+    const text = "AIプロンプトメーカーで、AIへの指示文を作りました。";
+    const intentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      text
+    )}&url=${encodeURIComponent(siteUrl)}`;
+    window.open(intentUrl, "_blank", "noopener,noreferrer");
+  }
+
   return (
     <div className="animate-rise-in rounded-xl2 border border-line bg-surface p-4">
       <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/40">
@@ -102,6 +112,12 @@ export default function PromptResultCard({
           className="rounded-lg border border-line bg-surface px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink active:scale-[0.98]"
         >
           共有
+        </button>
+        <button
+          onClick={handleShareX}
+          className="col-span-2 rounded-lg border border-line bg-surface px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink active:scale-[0.98] sm:col-span-1"
+        >
+          Xで共有
         </button>
       </div>
     </div>

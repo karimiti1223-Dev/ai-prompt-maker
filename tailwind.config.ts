@@ -33,10 +33,15 @@ const config: Config = {
           "0%": { opacity: "0", transform: "translateY(6px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "progress-slide": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(350%)" },
+        },
       },
       animation: {
         blink: "blink 1s step-start infinite",
         "rise-in": "rise-in 0.35s ease-out both",
+        "progress-slide": "progress-slide 1.1s ease-in-out infinite",
       },
     },
   },

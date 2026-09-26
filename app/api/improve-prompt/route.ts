@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callAI } from "@/lib/ai/provider";
+import { toUserFacingError } from "@/lib/ai/errors";
 import {
   buildImproveSystemPrompt,
   buildImproveUserPrompt,
@@ -27,9 +28,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(responseBody);
   } catch (error) {
     console.error("[improve-prompt] エラー:", error);
-    return NextResponse.json(
-      { error: "プロンプトの改善に失敗しました。時間をおいて再度お試しください。" },
-      { status: 500 }
-    );
+    const { message, status } = toUserFacingError(error);
+    return NextResponse.json({ error: message }, { status });
   }
 }

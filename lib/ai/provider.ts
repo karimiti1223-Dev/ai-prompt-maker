@@ -10,6 +10,10 @@ import { callGemini } from "./gemini";
 export type AIMessage = {
   systemPrompt: string; // AIへの役割指示
   userPrompt: string; // ユーザーからの実際の依頼内容
+  image?: {
+    mimeType: string; // 例: "image/png"
+    data: string; // base64文字列(先頭の "data:image/png;base64," は含まない)
+  };
 };
 
 export async function callAI(message: AIMessage): Promise<string> {
